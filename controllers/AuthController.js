@@ -1,88 +1,99 @@
+const User = require("../models/user");
+const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
-const User=require("../models/user")
-const bcrypt = require('bcrypt');
-
-exports.signup = (req, res) => {
-    const { username, password } = req.body;
+exports.signup = async(req, res) => {
+  const { username, password } = req.body;
+  try {
     if (!username || !password) {
-        return res.status(400).json({
-            success: false,
-            message: "Username and password are required!"
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Username and password are required!",
+      });
     }
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({
-                success: false,
-                error: "Internal Server Error"
-            });
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Username already exists!",
+      });
+    }
+    const hashedPassword = await bcrypt.hash(password,parseInt(process.env.SALT_KEY));// save the salt key in the env file this 10 is the salt key 
+    const newUser = new User({ username, password: hashedPassword });
+    await newUser.save();
+    res.status(201).json({
+        success: true,
+        message: "User created successfully.",
+        user: {
+            id: newUser._id,
+            username: newUser.username
         }
-        const newUser = new User({ username, password: hashedPassword });
-
-        newUser.save()
-            .then(() => {
-                res.status(201).json({
-                    success: true,
-                    message: "User created successfully"
-                });
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).json({
-                    success: false,
-                    error: "Internal Server Error"
-                });
-            });
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      error: `error: ${error.message}`,
+    });
+  }
 };
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
     const { username, password } = req.body;
-
-    if (!username || !password) {
+  
+    try {
+      if (!username || !password) {
         return res.status(400).json({
-            success: false,
-            error: "Username and password both are required"
+          success: false,
+          error: "Username and password both are required.",
         });
+      }
+  
+      const existingUser = await User.findOne({ username: username });
+  
+      if (!existingUser) {
+        return res.status(404).json({
+          success: false,
+          message: "Username does not exist.",
+        });
+      }
+  
+      const passwordMatch = await bcrypt.compare(password, existingUser.password);
+  
+      if (!passwordMatch) {
+        return res.status(401).json({
+          success: false,
+          message: "Incorrect password.",
+        });
+      }
+
+      const token = generateToken(existingUser); 
+      const userData = {
+        id: existingUser._id,
+        username: existingUser.username,
+      };
+  
+      res.status(200).json({
+        success: true,
+        message: "Login successful",
+        token: token,
+        user: userData,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        error: `Error: ${error.message}`,
+      });
     }
-
-    User.findOne({ username: username })
-        .then(existingUser => {
-            if (!existingUser) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Username does not exist"
-                });
-            }
-
-            
-            bcrypt.compare(password, existingUser.password, (err, result) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500).json({
-                        success: false,
-                        error: "Internal Server Error"
-                    });
-                }
-
-                if (!result) {
-                    return res.status(401).json({
-                        success: false,
-                        message: "Incorrect password"
-                    });
-                }
-                res.status(200).json({
-                    success: true,
-                    message: "Login successful"
-                });
-            });
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).json({
-                success: false,
-                error: "Internal Server Error"
-            });
-        });
-};
+  };
+  
+function generateToken(user) {
+    const payload = {
+      userId: user._id,
+      username: user.username,
+    };
+    const token = jwt.sign(payload, 'Shivangi', { expiresIn: '24h' }); // shvangi secret key has to be saved in env
+  
+    return token;
+  }
