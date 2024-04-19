@@ -18,7 +18,7 @@ exports.signup = async(req, res) => {
         message: "Username already exists!",
       });
     }
-    const hashedPassword = await bcrypt.hash(password,parseInt(process.env.SALT_KEY));// save the salt key in the env file this 10 is the salt key 
+    const hashedPassword = await bcrypt.hash(password,parseInt(process.env.SALT_KEY));
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
     res.status(201).json({
@@ -33,7 +33,7 @@ exports.signup = async(req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      error: `error: ${error.message}`,
+      error: `Error: ${error.message}`,
     });
   }
 };
