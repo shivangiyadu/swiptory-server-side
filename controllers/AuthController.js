@@ -93,7 +93,7 @@ function generateToken(user) {
       userId: user._id,
       username: user.username,
     };
-    const token = jwt.sign(payload, 'Shivangi', { expiresIn: '24h' }); // shvangi secret key has to be saved in env
+    const token = jwt.sign(payload, 'Shivangi', { expiresIn: '24h' }); // shvangi secret key ,expiration time has to be  saved in env
   
     return token;
   }
