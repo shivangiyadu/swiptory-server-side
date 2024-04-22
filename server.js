@@ -4,6 +4,7 @@ const bodyParser=require("body-parser");
 require("dotenv").config();
 
 const apiRoutes=require("./routes/authRoutes");
+const storyRoutes = require("./routes/storyRoutes");
 const cors=require("cors");
 
 const app=express();
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 
 
 app.use("/api/v1",apiRoutes);
+app.use("/api/v1",storyRoutes);
 
 mongoose.connect(DATABASE_URL).then(()=>{
     console.log("MONGO DB CONNECTED SUCCESSFULLY");

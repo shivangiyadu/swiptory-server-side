@@ -10,13 +10,14 @@ const verifyToken=(req,res,next)=>{
         {
             return res.status(401).json({message:"Unauthorized access"});
         }
-        const decode=jwt.verify(headerToken.split(" ")[1],process.env.SECRET_KEY);
-        req.userId=decode
+        const token=jwt.verify(headerToken.split(" ")[1],process.env.SECRET_KEY);
+        console.log("decode :",token);
+        req.user=token
         next();
     }
     catch(error)
     {
-        console,log(error);
+        console.log(error);
         res.status(401).json({errorMessage:"Invalid Token!"});
     }
 }

@@ -5,7 +5,9 @@ exports.createStory=async(req,res)=>{
     try{
          const {slides,category}=req.body;
 
-         const story_created_by=req.user.id
+         const story_created_by=req.user.userId
+         console.log("user object ",req.user);
+         console.log(story_created_by,"story created by ");
            
         const story=new Story({
             slides,
