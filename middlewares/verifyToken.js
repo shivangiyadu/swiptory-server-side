@@ -10,8 +10,8 @@ const verifyToken=(req,res,next)=>{
         {
             return res.status(401).json({message:"Unauthorized access"});
         }
-        const decode=jwt.verify(headerToken,process.env.SECRET_KEY);
-        req.userId=decode.userId
+        const decode=jwt.verify(headerToken.split(" ")[1],process.env.SECRET_KEY);
+        req.userId=decode
         next();
     }
     catch(error)

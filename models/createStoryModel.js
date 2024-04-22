@@ -42,6 +42,7 @@ const storySchema = new mongoose.Schema({
   liked_by_ids: {
     type: [mongoose.Schema.Types.ObjectId],
     default: [],
+    
   },
   story_created_by: {
     type: mongoose.Schema.Types.ObjectId,

@@ -3,14 +3,14 @@ const Story=require('../models/createStoryModel');
 
 exports.createStory=async(req,res)=>{
     try{
-        const {heading, description,imageUrl,category,userId}=req.body;
+         const {slides,category}=req.body;
+
+         const story_created_by=req.user.id
            
         const story=new Story({
-            heading,
-            description,
-            imageUrl,
+            slides,
             category,
-            createdBy:userId,
+            story_created_by
         });
         await story.save();
     

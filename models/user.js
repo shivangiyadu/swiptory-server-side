@@ -4,6 +4,7 @@ const mongoose=require("mongoose");
     username:{
         type:String,
         required:true,
+        unique:true
        
     },
     password:{
