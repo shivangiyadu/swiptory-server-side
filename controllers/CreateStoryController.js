@@ -24,3 +24,18 @@ exports.createStory=async(req,res)=>{
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
+
+exports.editStory=async(req,res)=>{
+    try{
+        const {id}=req.params;
+        const {slides,category}=req.body;
+
+        let story=await Story.findById(id);
+        story.slides=slides;
+        story.category=category;
+    }
+    catch(error){
+        res.status(500).json({success:false,error:'Internal Server Error'})
+
+    }
+}; 
