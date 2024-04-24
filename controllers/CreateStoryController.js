@@ -32,7 +32,8 @@ exports.editStory=async(req,res)=>{
         const {id}=req.params;
         const {slides,category}=req.body;
 
-        let story=await Story.findById(id); 
+       console.log(id);
+    let story=await Story.findById(id); 
     if(!story)        
     { 
         return res.status(404).json({success:false,error:"Story not Found"});
@@ -40,6 +41,7 @@ exports.editStory=async(req,res)=>{
     }    
         story.slides=slides;
         story.category=category;
+
         await story.save();
         res.status(200).json({
             success:true,
@@ -47,31 +49,32 @@ exports.editStory=async(req,res)=>{
         });
     }
     catch(error){
+        console.log("Error while editing story:",error);
         res.status(500).json({success:false,error:'Internal Server Error'})
 
     }
 }; 
-
+/*
 exports.getStoryByCategory=async(req,res)=>{
     try{
         const {category}=req.params;
-        
-        if(!category)
+        let query={};
+            if(category)
+            {
+                query.category=category;
+
+            }
+            const stories=await Story.find({query})
+                  console.log(category);
+                  console.log(stories);
+        if(stories.length==0)
         {
             return res.status().json({
                 success:false,
-                message:"Category not found "
+                message:"NO stories found for this category "
             })
         }
-        const stories=await Story.find({category})
-
-        if(stories.length===0)
-        {
-            return res.status(404).json({
-                success:false,
-                message:`No Story found for this category :${category}`,
-            })
-        }
+        
         else{
             return res.status(200).json({
                 success:true,
@@ -88,25 +91,67 @@ exports.getStoryByCategory=async(req,res)=>{
     }
 
 }
+*/
+exports.getStoryByCategory = async (req, res) => {
+    try {
+        const { category } = req.params; // Access category directly from req.params
+        let query = {};
+
+        if (category) {
+            query.category = category;
+        }
+
+        const stories = await Story.find(query); // Use query directly in find()
+
+        console.log(category);
+        console.log(stories);
+
+        if (stories.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No stories found for this category"
+            });
+        } else {
+            return res.status(200).json({
+                success: true,
+                message: "Stories found for this category",
+                data: stories
+            });
+        }
+    } catch (error) {
+        console.log("Error while fetching the story:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+};
+
 exports.getMySotry=async(req,res)=>{
     
     try{
-   const {userId}=req.user.id;
-    const {story_created_by}=req.params;
+   const userId=req.user.id;
+   const stories=await Story.find({story_created_by:userId});
 
-    if(userId!==story_created_by)
+    if(stories.length===0)
     {
-       
+        return res.status(404).json({
+            success:false,
+            message:"No Stories Found for the user",
+        });
+    }
+    const creator=stories.find(story=>story.story_created_by!==userId);
+        if (creator){    
        return res.status(403).json({
         success:false,
         message:"You're not authorized to view this Story",
        })
     }
-    const stories=await Story.find({story_created_by})
+    
     return res.status.json({
-        success:false,
+        success:true,
         data:stories,
-        message:`Stories created by ${story_created_by} found`
+        message:"Stories created by found",
     })
 }
 catch(error){
@@ -116,3 +161,29 @@ catch(error){
 
 }
 }
+
+exports.getStoryById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const story = await Story.findById(id);
+
+        if (story) {
+            return res.status(200).json({
+                success: true,
+                data: story,
+                message: "Story found",
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "Story not found",
+            });
+        }
+    } catch (error) {
+        console.log("Error while Fetching the story:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+};

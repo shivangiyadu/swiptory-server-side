@@ -15,3 +15,4 @@ const mongoose=require("mongoose");
  })
  const user=mongoose.model("user",userData);
  module.exports=user;
+
