@@ -127,12 +127,12 @@ exports.getStoryByCategory = async (req, res) => {
     }
 };
 
-exports.getMySotry=async(req,res)=>{
-    
+exports.getMySotry=async(req,res)=>{   
     try{
-   const userId=req.user.id;
+   const userId=req.user.userId; //req.user.id apne ye likha tha that is not how middleware mai attach kra hai , object 
+   console.log(userId);
    const stories=await Story.find({story_created_by:userId});
-
+   console.log(stories);
     if(stories.length===0)
     {
         return res.status(404).json({
@@ -140,15 +140,15 @@ exports.getMySotry=async(req,res)=>{
             message:"No Stories Found for the user",
         });
     }
-    const creator=stories.find(story=>story.story_created_by!==userId);
-        if (creator){    
-       return res.status(403).json({
-        success:false,
-        message:"You're not authorized to view this Story",
-       })
-    }
+    // const creator=stories.find(story=>story.story_created_by!==userId);
+    //     if (creator){    
+    //    return res.status(403).json({                                      
+    //     success:false,                                                        // this is not required because hum id ke basis pr hi to fetch kr rahe hai to ..obvious baat hai ki uski hi stories hai , thats why ye required nahi hai 
+    //     message:"You're not authorized to view this Story",
+    //    })
+    // }
     
-    return res.status.json({
+    return res.status(200).json({           // yaha pr typo tha res.status.json 
         success:true,
         data:stories,
         message:"Stories created by found",
