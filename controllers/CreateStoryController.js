@@ -31,7 +31,7 @@ exports.editStory=async(req,res)=>{
     try{
         const {id}=req.params;
         const {slides,category}=req.body;
-
+        const userId=req.user.userId;// fetched user Id 
        console.log(id);
     let story=await Story.findById(id); 
     if(!story)        
@@ -39,6 +39,10 @@ exports.editStory=async(req,res)=>{
         return res.status(404).json({success:false,error:"Story not Found"});
 
     }    
+    if(story.story_created_by != userId){                                 // ye condtion check krne ke liye ki jo story edit kr raha hai vo usi ne banayi thi 
+        return res.status(404).json({success:false,error:"Permission denied , story not created by user "});  
+    }
+    
         story.slides=slides;
         story.category=category;
 
