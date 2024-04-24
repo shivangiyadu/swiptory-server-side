@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 exports.signup = async(req, res) => {
   const { username, password } = req.body;
   try {
-    console.log("reaching code");
+    
     if (!username || !password) {
       return res.status(400).json({
         success: false,
