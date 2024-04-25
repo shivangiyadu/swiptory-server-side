@@ -58,44 +58,7 @@ exports.editStory=async(req,res)=>{
 
     }
 }; 
-/*
-exports.getStoryByCategory=async(req,res)=>{
-    try{
-        const {category}=req.params;
-        let query={};
-            if(category)
-            {
-                query.category=category;
 
-            }
-            const stories=await Story.find({query})
-                  console.log(category);
-                  console.log(stories);
-        if(stories.length==0)
-        {
-            return res.status().json({
-                success:false,
-                message:"NO stories found for this category "
-            })
-        }
-        
-        else{
-            return res.status(200).json({
-                success:true,
-                message:"Story found for this category",
-                data:stories,
-            })
-        }
-    }
-    catch(error){
-        console.log("Error while Fetching the story:",error);
-        res.status(500).json({success:false,
-        message:"Internal server error"})
-
-    }
-
-}
-*/
 exports.getStoryByCategory = async (req, res) => {
     try {
         const { category } = req.params; // Access category directly from req.params

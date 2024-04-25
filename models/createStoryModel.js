@@ -49,6 +49,13 @@ const storySchema = new mongoose.Schema({
     required: true,
     ref: 'User', // reference to  User model
   },
+  bookmarks: {
+    type: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    }],
+    default: [],
+  },
 });
 
 // Create the Story model
