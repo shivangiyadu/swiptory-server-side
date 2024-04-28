@@ -3,7 +3,12 @@ const Book = require('../models/books');
 exports.getAllBooks = async (req, res) => {
   try {
     const books = await Book.find({ userId: req.user });
-    res.json(books);
+    const booksWithoutUserId = books.map(book => {
+        const { userId: _, ...bookWithoutUserId } = book.toObject();
+        return bookWithoutUserId;
+      });
+  
+    res.json(booksWithoutUserId);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
