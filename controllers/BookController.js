@@ -27,6 +27,9 @@ exports.getBookById = async (req, res) => {
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
+    if (book.userId !== req.user) {
+        return res.status(403).json({ message: 'Unauthorized: Book does not belong to the user' });
+      }
     res.json(book);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -40,6 +43,9 @@ exports.updateBook = async (req, res) => {
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
+    if (book.userId !== req.user) {
+        return res.status(403).json({ message: 'Unauthorized: Book does not belong to the user' });
+      }
     book.title = title;
     book.author = author;
     book.publicationYear = publicationYear;
@@ -56,6 +62,9 @@ exports.deleteBook = async (req, res) => {
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
+    if (book.userId !== req.user) {
+        return res.status(403).json({ message: 'Unauthorized: Book does not belong to the user' });
+      }
     await book.remove();
     res.json({ message: 'Book deleted' });
   } catch (error) {
