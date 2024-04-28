@@ -11,7 +11,11 @@ const mongoose=require("mongoose");
         type:String,
         required:true,
        
-    }
+    },
+    bookmarked_stories: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: []
+      }
  })
  const user=mongoose.model("user",userData);
  module.exports=user;

@@ -19,4 +19,8 @@ router.get('/user/story/:id',createStoryController.getStoryById);
 router.put('/like/:id',middleware,likeController.LikeStory);
 
 router.post("/bookmarkStory/:id",middleware,bookmarked.bookmarkStory);
+router.post("/removeBookmark/:id",middleware,bookmarked.removeBookmark);
+router.post("/viewBookmarkedStory",middleware,bookmarked.bookmarkStory);
+
+
 module.exports=router;
