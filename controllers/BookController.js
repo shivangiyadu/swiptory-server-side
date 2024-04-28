@@ -15,7 +15,8 @@ exports.createBook = async (req, res) => {
 
   try {
     const newBook = await Book.create({ title, author, publicationYear, userId });
-    res.status(201).json(newBook);
+    const { userId: _, ...bookWithoutUserId } = newBook.toObject();
+    res.status(201).json(bookWithoutUserId);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -30,7 +31,8 @@ exports.getBookById = async (req, res) => {
     if (book.userId !== req.user) {
         return res.status(403).json({ message: 'Unauthorized: Book does not belong to the user' });
       }
-    res.json(book);
+      const { userId: _, ...bookWithoutUserId } = book.toObject();
+    res.json(bookWithoutUserId);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -50,7 +52,8 @@ exports.updateBook = async (req, res) => {
     book.author = author;
     book.publicationYear = publicationYear;
     await book.save();
-    res.json(book);
+    const { userId: _, ...bookWithoutUserId } = book.toObject();
+    res.json(bookWithoutUserId);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -86,7 +89,12 @@ exports.filterBooks = async (req, res) => {
     try {
         const userId = req.user
         const books = await Book.find({ ...filter, userId });
-        res.json(books);
+        const booksWithoutUserId = books.map(book => {
+            const { userId: _, ...bookWithoutUserId } = book.toObject();
+            return bookWithoutUserId;
+          });
+      
+        res.json(booksWithoutUserId);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
