@@ -14,7 +14,7 @@ router.get('/getStory/:category',createStoryController.getStoryByCategory);
 
 router.get('/getMyStory',middleware,createStoryController.getMySotry);
 
-router.get('/user/story/:id',createStoryController.getStoryById);
+router.get('/user/story/:id',middleware,createStoryController.getStoryById);
 
 router.put('/like/:id',middleware,likeController.LikeStory);
 

@@ -132,20 +132,37 @@ catch(error){
 exports.getStoryById = async (req, res) => {
     try {
         const { id } = req.params;
+        if (!req.user || !req.user.userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized access or missing user information",
+            });
+        }
+
+        const userId = req.user.userId;
+        console.log("ob", userId);
+
         const story = await Story.findById(id);
 
-        if (story) {
-            return res.status(200).json({
-                success: true,
-                data: story,
-                message: "Story found",
-            });
-        } else {
+        if (!story) {
             return res.status(404).json({
                 success: false,
                 message: "Story not found",
             });
         }
+
+        const liked = Array.isArray(story.liked_by_ids) && story.liked_by_ids.includes(userId);
+        const bookmarked = Array.isArray(req.user.bookmarked_stories) && req.user.bookmarked_stories.includes(id);
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                ...story.toObject(),
+                liked,
+                bookmarked,
+            },
+            message: "Story found",
+        });
     } catch (error) {
         console.log("Error while Fetching the story:", error);
         res.status(500).json({
@@ -154,3 +171,5 @@ exports.getStoryById = async (req, res) => {
         });
     }
 };
+
+
