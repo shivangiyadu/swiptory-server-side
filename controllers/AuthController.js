@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 exports.signup = async(req, res) => {
   const { username, password } = req.body;
   try {
+    
     if (!username || !password) {
       return res.status(400).json({
         success: false,
@@ -93,7 +94,7 @@ function generateToken(user) {
       userId: user._id,
       username: user.username,
     };
-    const token = jwt.sign(payload, 'Shivangi', { expiresIn: '24h' }); // shvangi secret key ,expiration time has to be  saved in env
+    const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' }); // shvangi secret key ,expiration time has to be  saved in env
   
     return token;
   }
