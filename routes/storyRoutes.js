@@ -19,8 +19,8 @@ router.get('/user/story/:id',middleware,createStoryController.getStoryById);
 router.put('/like/:id',middleware,likeController.LikeStory);
 
 router.post("/bookmarkStory/:id",middleware,bookmarked.bookmarkStory);
-router.post("/removeBookmark/:id",middleware,bookmarked.removeBookmark);
-router.post("/viewBookmarkedStory",middleware,bookmarked.bookmarkStory);
+// router.post("/removeBookmark/:id",middleware,bookmarked.removeBookmark);
+router.get("/view/BookmarkedStory",middleware,bookmarked.getBookmarkedStories);
 
 
 module.exports=router;
