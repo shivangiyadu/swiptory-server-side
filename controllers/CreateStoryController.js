@@ -63,8 +63,9 @@ exports.getStoryByCategory = async (req, res) => {
     try {
         const { category } = req.params; // Access category directly from req.params
         let query = {};
-
-        if (category) {
+        
+       
+        if (category!=='all') {
             query.category = category;
         }
 

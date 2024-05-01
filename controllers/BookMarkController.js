@@ -6,6 +6,9 @@ exports.bookmarkStory = async (req, res) => {
   const userId = req.user.userId;
   const storyId = req.params.id;
   try {
+
+    console.log("sTORY id :",storyId);
+
       console.log(storyId);
       const story = await Story.findById(storyId);
 
@@ -15,7 +18,7 @@ exports.bookmarkStory = async (req, res) => {
               message: "Story not found",
           });
       }
-
+      
       console.log("Bookmarks:", story.bookmarks);
       const user = await User.findById(userId);
       if (!user) {
