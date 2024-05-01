@@ -62,6 +62,7 @@ exports.editStory=async(req,res)=>{
 exports.getStoryByCategory = async (req, res) => {
     try {
         const { category } = req.params; // Access category directly from req.params
+        console.log("object",category);
         let query = {};
         
        
